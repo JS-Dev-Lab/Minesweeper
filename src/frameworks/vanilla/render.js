@@ -1,5 +1,4 @@
 function render({ state }) {
-  window.console.log(state);
   const newState = Object.assign(
     { ...state },
     {
@@ -8,7 +7,8 @@ function render({ state }) {
       )
     }
   );
-  return `<pre>${JSON.stringify(newState, null, 2)}</pre>`;
+  return `<pre>${JSON.stringify(newState.array, null, 2)}</pre>
+          <button onClick="commands.reRun();">Restart</button>`;
 }
 
 export { render };

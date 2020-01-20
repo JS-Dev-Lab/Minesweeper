@@ -1,38 +1,46 @@
-function addOneMine(array, { width, height }) {
-  do {
-    const rank = Math.round(Math.random() * width * height);
-    const x = rank % height;
-    const y = Math.round(rank / width);
-    if (array[x][y] === false) {
-      array[x][y] = true;
-      return array;
-    }
-  } while (true);
-}
+import { TwoDimensionalArray } from "../infra/TwoDimensionalArray";
 
 class MineArray {
   constructor({ width, height, mineNumber }) {
-    let result = Array.from({ length: height }, () =>
-      new Array(width).fill(false)
-    );
-    for (let i = 0; i < mineNumber; i++) {
-      result = addOneMine(result, { width, height });
-    }
-    this.array = result;
+    this._array = new TwoDimensionalArray({ width, height, value: false });
     this.width = width;
     this.height = height;
     this.mineNumber = mineNumber;
+    for (let i = 0; i < mineNumber; i++) {
+      this.addOneMine();
+    }
+    this.solve();
     this.invariant();
   }
 
+  addOneMine() {
+    do {
+      const rank = Math.round(Math.random() * this._array.numberElements);
+      const position = this._array.getPosition(rank);
+      if (this._array.getValue(position) === false) {
+        this._array.setValue(position, true);
+        return;
+      }
+    } while (true);
+  }
+
+  get array() {
+    return this._array.foto;
+  }
+
+  solve() {
+    window.console.log("solve");
+  }
+
   invariant() {
-    const mineNumberCalculated = this.array.reduce(
-      (previous, raw) =>
-        previous + raw.reduce((a, b) => a + (b === true ? 1 : 0)),
+    const mineNumberCalculated = this._array.reduce(
+      (a, b) => a + (b === true ? 1 : 0),
       0
     );
     if (mineNumberCalculated !== this.mineNumber) {
-      throw new Error("invariant broken: number of mines");
+      throw new Error(
+        `invariant broken: number of mines: expected ${this.mineNumber} calculated: ${mineNumberCalculated}`
+      );
     }
   }
 }

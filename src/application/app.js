@@ -7,12 +7,12 @@ function run(createView, MineArray) {
 
   const view = createView({
     state: {
-      array: [...mineArray.array]
+      array: mineArray.array
     },
     commands: {
       reRun() {
         mineArray = new MineArray({ width, height, mineNumber });
-        view.update(s => (s.array = [...mineArray.array]));
+        view.update(s => (s.array = mineArray.array));
       },
       guess({ x, y }) {
         view.update(state => {
