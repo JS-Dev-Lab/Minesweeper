@@ -35,10 +35,12 @@ class MineArray {
 
   solve() {
     this._array.forEach((_, { x, y }) => {
-      const value = this._array.getNeighbours({ x, y }).reduce((a, b) => {
-        window.console.log({ x, y }, b);
-        return a + (b ? 1 : 0);
-      }, -(this._array.getValue({ x, y }) ? 1 : 0));
+      const value = this._array
+        .getNeighbours({ x, y })
+        .reduce(
+          (a, b) => a + (b ? 1 : 0),
+          this._array.getValue({ x, y }) ? -1 : 0
+        );
       this._mineCount.setValue({ x, y }, value);
     });
   }
