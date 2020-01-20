@@ -1,9 +1,14 @@
-function render({ state: { array, name, count } }) {
-  return `<h1>Hello ${name}</h1>
- <input value="${name}" onInput="commands.setName(event.target.value)"></input>
- <p>${name.length}</p>
- <p>${count}</p><button onClick="commands.add()">My button</button>
- <ul>${array.map(value => `<li>${value}</li>`).join("")}</ul>`;
+function render({ state }) {
+  window.console.log(state);
+  const newState = Object.assign(
+    { ...state },
+    {
+      array: state.array.map(row =>
+        row.reduce((a, b) => a + (b ? "1" : "0"), "")
+      )
+    }
+  );
+  return `<pre>${JSON.stringify(newState, null, 2)}</pre>`;
 }
 
 export { render };

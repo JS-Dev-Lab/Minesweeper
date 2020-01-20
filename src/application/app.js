@@ -1,19 +1,22 @@
-function run(createView) {
+function run(createView, MineArray) {
+  const width = 20;
+  const height = 30;
+  const mineNumber = 50;
+
+  let mineArray = new MineArray({ width, height, mineNumber });
+
   const view = createView({
     state: {
-      name: "Welcome to mvi!!",
-      count: 0,
-      array: []
+      array: [...mineArray.array]
     },
     commands: {
-      add() {
+      reRun() {
+        mineArray = new MineArray({ width, height, mineNumber });
+        view.update(s => (s.array = [...mineArray.array]));
+      },
+      guess({ x, y }) {
         view.update(state => {
           state.count++;
-        });
-      },
-      setName(value) {
-        view.update(state => {
-          state.name = value;
         });
       }
     }
