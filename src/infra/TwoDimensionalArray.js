@@ -1,7 +1,9 @@
+import { range } from "./range";
+
 class TwoDimensionalArray {
   constructor({ width, height, value }) {
-    this.array = Array.from({ length: height }, () =>
-      new Array(width).fill(value)
+    this.array = Array.from({ length: width }, () =>
+      new Array(height).fill(value)
     );
     this.width = width;
     this.height = height;
@@ -23,20 +25,53 @@ class TwoDimensionalArray {
     this.array[x][y] = value;
   }
 
+  getNeighbours({ x: x0, y: y0 }) {
+    return this.rangeX(x0 - 1, x0 + 1).flatMap(x =>
+      this.rangeY(y0 - 1, y0 + 1).map(y =>
+        this.getValue({
+          x,
+          y
+        })
+      )
+    );
+  }
+
+  rangeX(x0, x1) {
+    return range(this.getXScaled(x0), this.getXScaled(x1));
+  }
+
+  rangeY(y0, y1) {
+    return range(this.getYScaled(y0), this.getYScaled(y1));
+  }
+
+  getXScaled(x) {
+    return x < 0 ? 0 : x >= this.width ? this.width - 1 : x;
+  }
+
+  getYScaled(y) {
+    return y < 0 ? 0 : y >= this.height ? this.height - 1 : y;
+  }
+
   getPosition(rank) {
-    const x = rank % this.height;
+    const x = rank % this.width;
     const y = Math.round(rank / this.width);
     return { x, y };
   }
 
   reduce(callback, inicial) {
     let accumulator = inicial;
+    this.forEach((value, position) => {
+      accumulator = callback(accumulator, value, position);
+    });
+    return accumulator;
+  }
+
+  forEach(callBack) {
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
-        accumulator = callback(accumulator, this.array[y][x], { x, y });
+        callBack(this.array[x][y], { x, y });
       }
     }
-    return accumulator;
   }
 }
 

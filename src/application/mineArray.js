@@ -3,6 +3,7 @@ import { TwoDimensionalArray } from "../infra/TwoDimensionalArray";
 class MineArray {
   constructor({ width, height, mineNumber }) {
     this._array = new TwoDimensionalArray({ width, height, value: false });
+    this._mineCount = new TwoDimensionalArray({ width, height, value: 0 });
     this.width = width;
     this.height = height;
     this.mineNumber = mineNumber;
@@ -28,8 +29,18 @@ class MineArray {
     return this._array.foto;
   }
 
+  get mineCount() {
+    return this._mineCount.foto;
+  }
+
   solve() {
-    window.console.log("solve");
+    this._array.forEach((_, { x, y }) => {
+      const value = this._array.getNeighbours({ x, y }).reduce((a, b) => {
+        window.console.log({ x, y }, b);
+        return a + (b ? 1 : 0);
+      }, -(this._array.getValue({ x, y }) ? 1 : 0));
+      this._mineCount.setValue({ x, y }, value);
+    });
   }
 
   invariant() {
