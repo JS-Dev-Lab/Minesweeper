@@ -7,36 +7,35 @@ class MineArray {
     this.width = width;
     this.height = height;
     this.mineNumber = mineNumber;
-    for (let i = 0; i < mineNumber; i++) {
-      this.addOneMine();
-    }
+    this.addMines();
     this.solve();
     this.invariant();
   }
 
-  addOneMine() {
+  addMines() {
+    let count =0;
     do {
       const rank = Math.round(Math.random() * this._array.numberElements);
       const position = this._array.getPosition(rank);
       if (this._array.getValue(position) === false) {
         this._array.setValue(position, true);
-        return;
+        count++;
       }
-    } while (true);
+    } while (count < this.mineNumber);
   }
 
   get array() {
-    return this._array.foto;
+    return this._array.photo;
   }
 
   get mineCount() {
-    return this._mineCount.foto;
+    return this._mineCount.photo;
   }
 
   solve() {
     this._array.forEach((_, { x, y }) => {
       const value = this._array
-        .getNeighbours({ x, y })
+        .getNeighbors({ x, y })
         .reduce(
           (a, b) => a + (b ? 1 : 0),
           this._array.getValue({ x, y }) ? -1 : 0

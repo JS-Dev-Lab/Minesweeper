@@ -13,7 +13,7 @@ class TwoDimensionalArray {
     return this.width * this.height;
   }
 
-  get foto() {
+  get photo() {
     return this.array.map(value => [...value]);
   }
 
@@ -25,7 +25,7 @@ class TwoDimensionalArray {
     this.array[x][y] = value;
   }
 
-  getNeighbours({ x: x0, y: y0 }) {
+  getNeighbors({ x: x0, y: y0 }) {
     return this.rangeX(x0 - 1, x0 + 1).flatMap(x =>
       this.rangeY(y0 - 1, y0 + 1).map(y =>
         this.getValue({
@@ -58,8 +58,8 @@ class TwoDimensionalArray {
     return { x, y };
   }
 
-  reduce(callback, inicial) {
-    let accumulator = inicial;
+  reduce(callback, start) {
+    let accumulator = start;
     this.forEach((value, position) => {
       accumulator = callback(accumulator, value, position);
     });
