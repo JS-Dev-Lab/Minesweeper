@@ -1,3 +1,8 @@
+const formatter = {
+  "0": " ",
+  true: "*"
+};
+
 function render({ state }) {
   const newState = Object.assign(
     { ...state },
@@ -5,7 +10,9 @@ function render({ state }) {
       array: state.array.map(row =>
         row.reduce((a, b) => a + (b ? "1" : "0"), "")
       ),
-      mineCount: state.mineCount.map(row => row.reduce((a, b) => a + b, ""))
+      mineCount: state.mineCount.map(row =>
+        row.reduce((a, b) => a + (formatter[b.toString()] || b), "")
+      )
     }
   );
   return `<pre>${JSON.stringify(newState.array, null, 2)}</pre>
