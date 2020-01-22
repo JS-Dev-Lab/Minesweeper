@@ -2,8 +2,9 @@ import { range } from "./range";
 
 class TwoDimensionalArray {
   constructor({ width, height, value }) {
+    const getValue = typeof value === "function" ? value : () => value;
     this.array = Array.from({ length: width }, () =>
-      new Array(height).fill(value)
+      Array.from({ length: height }, getValue)
     );
     this.width = width;
     this.height = height;
@@ -13,8 +14,12 @@ class TwoDimensionalArray {
     return this.width * this.height;
   }
 
-  get foto() {
-    return this.array.map(value => [...value]);
+  get photo() {
+    return this.map(value => value);
+  }
+
+  map(mapper) {
+    return this.array.map(value => value.map(mapper));
   }
 
   getValue({ x, y }) {
@@ -26,14 +31,10 @@ class TwoDimensionalArray {
   }
 
   getNeighbours({ x: x0, y: y0 }) {
-    return this.rangeX(x0 - 1, x0 + 1).flatMap(x =>
-      this.rangeY(y0 - 1, y0 + 1).map(y =>
-        this.getValue({
-          x,
-          y
-        })
-      )
-    );
+    return this.rangeX(x0 - 1, x0 + 1)
+      .flatMap(x => this.rangeY(y0 - 1, y0 + 1).map(y => ({ x, y })))
+      .filter(({ x, y }) => x !== x0 || y !== y0)
+      .map(this.getValue.bind(this));
   }
 
   rangeX(x0, x1) {
@@ -72,6 +73,7 @@ class TwoDimensionalArray {
         callBack(this.array[x][y], { x, y });
       }
     }
+    return this;
   }
 }
 
