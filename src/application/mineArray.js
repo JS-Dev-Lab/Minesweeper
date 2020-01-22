@@ -5,7 +5,7 @@ class MineArray {
     this._array = new TwoDimensionalArray({
       width,
       height,
-      value: () => ({ mine: false, neighbourMines: 0 })
+      value: () => ({ mine: false, neighbourMines: 0, seen: false })
     });
     this.width = width;
     this.height = height;

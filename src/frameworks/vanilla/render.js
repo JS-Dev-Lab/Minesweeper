@@ -1,4 +1,7 @@
 function formater(cell) {
+  if (!cell.seen) {
+    return "-";
+  }
   if (cell.mine) {
     return "*";
   }
@@ -9,13 +12,10 @@ function formater(cell) {
 }
 
 function render({ state }) {
-  const newState = Object.assign(
-    { ...state },
-    {
-      array: state.array.map(row => row.reduce((a, b) => a + formater(b), ""))
-    }
+  const array = state.array.map(row =>
+    row.reduce((a, b) => a + formater(b), "")
   );
-  return `<pre>${JSON.stringify(newState.array, null, 2)}</pre>       
+  return `<pre>${JSON.stringify(array, null, 2)}</pre>       
           <button onClick="commands.reRun();">Restart</button>`;
 }
 
