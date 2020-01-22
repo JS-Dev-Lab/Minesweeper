@@ -1,22 +1,19 @@
-function formater(cell) {
-  if (!cell.seen) {
+function formater({ seen, mine, neighbourMines }) {
+  if (!seen) {
     return "-";
   }
-  if (cell.mine) {
+  if (mine) {
     return "*";
   }
-  if (cell.neighbourMines === 0) {
-    return " ";
-  }
-  return cell.neighbourMines;
+  return neighbourMines === 0 ? " " : neighbourMines;
 }
 
-function render({ state }) {
-  const array = state.array.map(row =>
-    row.reduce((a, b) => a + formater(b), "")
-  );
-  return `<pre>${JSON.stringify(array, null, 2)}</pre>
-          ${state.status === "loose" ? "<p>you loose!!!!</p>" : ""}   
+function render({ state: { array: rawArray, status } }) {
+  const array = rawArray
+    .map(row => row.reduce((a, b) => a + formater(b), ""))
+    .reduce((acc, row) => acc + "\n" + row);
+  return `<pre>${array}</pre>
+          ${status === "loose" ? "<p>you loose!!!!</p>" : ""}   
           <button onClick="commands.reRun();">Restart</button>`;
 }
 
