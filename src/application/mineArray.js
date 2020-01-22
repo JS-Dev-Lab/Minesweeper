@@ -7,22 +7,22 @@ class MineArray {
     this.width = width;
     this.height = height;
     this.mineNumber = mineNumber;
-    for (let i = 0; i < mineNumber; i++) {
-      this.addOneMine();
-    }
+    this.addMines();
     this.solve();
     this.invariant();
   }
 
-  addOneMine() {
+  addMines() {
+    let count = 0;
+    const max = this.mineNumber;
     do {
       const rank = Math.round(Math.random() * this._array.numberElements);
       const position = this._array.getPosition(rank);
-      if (this._array.getValue(position) === false) {
+      if (!this._array.getValue(position)) {
         this._array.setValue(position, true);
-        return;
+        count++;
       }
-    } while (true);
+    } while (count < max);
   }
 
   get array() {
@@ -34,14 +34,13 @@ class MineArray {
   }
 
   solve() {
-    this._array.forEach((_, { x, y }) => {
-      const value = this._array
-        .getNeighbours({ x, y })
-        .reduce(
-          (a, b) => a + (b ? 1 : 0),
-          this._array.getValue({ x, y }) ? -1 : 0
-        );
-      this._mineCount.setValue({ x, y }, value);
+    this._array.forEach((value, { x, y }) => {
+      const mineCountValue =
+        value ||
+        this._array
+          .getNeighbours({ x, y })
+          .reduce((a, b) => a + (b ? 1 : 0), 0);
+      this._mineCount.setValue({ x, y }, mineCountValue);
     });
   }
 

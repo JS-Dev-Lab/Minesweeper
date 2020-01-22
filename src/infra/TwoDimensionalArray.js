@@ -54,7 +54,7 @@ class TwoDimensionalArray {
 
   getPosition(rank) {
     const x = rank % this.width;
-    const y = Math.round(rank / this.width);
+    const y = Math.ceil((rank - x) / this.width);
     return { x, y };
   }
 
