@@ -9,9 +9,19 @@ class MineArray {
     });
     this.width = width;
     this.height = height;
+    this.status = "running";
     this.mineNumber = Math.min(mineNumber, width * height - 1);
     this.addMines();
     this.invariant();
+  }
+
+  guess(position) {
+    const cell = this.getCell(position);
+    cell.seen = true;
+    if (cell.mine) {
+      this.status = "loose";
+      return;
+    }
   }
 
   addMines() {
@@ -20,15 +30,20 @@ class MineArray {
     do {
       const rank = Math.round(Math.random() * (this._array.numberElements - 1));
       const position = this._array.getPosition(rank);
-      if (this._array.getValue(position).mine) {
+      const cell = this.getCell(position);
+      if (cell.mine) {
         continue;
       }
-      this._array.getValue(position).mine = true;
+      cell.mine = true;
       this._array
         .getNeighbours(position)
         .forEach(value => value.neighbourMines++);
       count++;
     } while (count < max);
+  }
+
+  getCell(position) {
+    return this._array.getValue(position);
   }
 
   get array() {

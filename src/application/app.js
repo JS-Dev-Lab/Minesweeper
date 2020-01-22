@@ -5,21 +5,26 @@ function run(createView, MineArray) {
 
   let mineArray = new MineArray({ width, height, mineNumber });
 
+  function updateView() {
+    view.update(s => {
+      s.array = mineArray.array;
+      s.status = mineArray.status;
+    });
+  }
+
   const view = createView({
     state: {
-      array: mineArray.array
+      array: mineArray.array,
+      status: mineArray.status
     },
     commands: {
       reRun() {
         mineArray = new MineArray({ width, height, mineNumber });
-        view.update(s => {
-          s.array = mineArray.array;
-        });
+        updateView();
       },
       guess({ x, y }) {
-        view.update(state => {
-          state.count++;
-        });
+        mineArray.guess({ x, y });
+        updateView();
       }
     }
   });
