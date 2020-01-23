@@ -30,7 +30,7 @@ class TwoDimensionalArray {
     this.array[x][y] = value;
   }
 
-  getNeighbours({ x: x0, y: y0 }) {
+  getNeighbors({ x: x0, y: y0 }) {
     return this.rangeX(x0 - 1, x0 + 1)
       .flatMap(x => this.rangeY(y0 - 1, y0 + 1).map(y => ({ x, y })))
       .filter(({ x, y }) => x !== x0 || y !== y0)

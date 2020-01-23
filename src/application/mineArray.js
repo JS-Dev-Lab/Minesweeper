@@ -5,7 +5,7 @@ class MineArray {
     this._array = new TwoDimensionalArray({
       width,
       height,
-      value: () => ({ mine: false, neighbourMines: 0, seen: false })
+      value: () => ({ mine: false, neighborMines: 0, seen: false })
     });
     this.width = width;
     this.height = height;
@@ -36,8 +36,8 @@ class MineArray {
       }
       cell.mine = true;
       this._array
-        .getNeighbours(position)
-        .forEach(value => value.neighbourMines++);
+        .getNeighbors(position)
+        .forEach(value => value.neighborMines++);
       count++;
     } while (count < max);
   }
