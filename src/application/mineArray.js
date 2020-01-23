@@ -17,11 +17,20 @@ class MineArray {
 
   guess(position) {
     const cell = this.getCell(position);
+    if (cell.seen) {
+      return;
+    }
     cell.seen = true;
     if (cell.mine) {
       this.status = "loose";
       return;
     }
+    if (cell.neighborMines !== 0) {
+      return;
+    }
+    this._array
+      .getNeighbors(position)
+      .forEach(({x, y}) => this.guess({x, y}));
   }
 
   addMines() {
@@ -37,7 +46,7 @@ class MineArray {
       cell.mine = true;
       this._array
         .getNeighbors(position)
-        .forEach(value => value.neighborMines++);
+        .forEach(({ value }) => value.neighborMines++);
       count++;
     } while (count < max);
   }
