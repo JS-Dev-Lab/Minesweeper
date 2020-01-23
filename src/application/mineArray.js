@@ -15,6 +15,10 @@ class MineArray {
     this.invariant();
   }
 
+  get size() {
+    return this.width * this.height;
+  }
+
   guess(position) {
     const cell = this.getCell(position);
     if (cell.seen) {
@@ -25,12 +29,15 @@ class MineArray {
       this.status = "loose";
       return;
     }
+    const allSeen = this.reduceMineSweep(({ seen }) => seen ? 1 : 0);
+    if (allSeen + this.mineNumber === this.size) {
+      this.status = "win";
+      return;
+    }
     if (cell.neighborMines !== 0) {
       return;
     }
-    this._array
-      .getNeighbors(position)
-      .forEach(({x, y}) => this.guess({x, y}));
+    this.forEachNeighbors(position, ({ x, y }) => this.guess({ x, y }));
   }
 
   addMines() {
@@ -44,11 +51,13 @@ class MineArray {
         continue;
       }
       cell.mine = true;
-      this._array
-        .getNeighbors(position)
-        .forEach(({ value }) => value.neighborMines++);
+      this.forEachNeighbors(position, ({ value }) => value.neighborMines++);
       count++;
     } while (count < max);
+  }
+
+  forEachNeighbors(position, callback) {
+    return this._array.getNeighbors(position).forEach(callback);
   }
 
   getCell(position) {
@@ -59,11 +68,12 @@ class MineArray {
     return this._array.photo;
   }
 
+  reduceMineSweep(counter) {
+    return this._array.reduce((a, b) => a + counter(b), 0);
+  }
+
   invariant() {
-    const mineNumberCalculated = this._array.reduce(
-      (a, b) => a + (b.mine === true ? 1 : 0),
-      0
-    );
+    const mineNumberCalculated = this.reduceMineSweep(({ mine }) => (mine === true ? 1 : 0));
     if (mineNumberCalculated !== this.mineNumber) {
       throw new Error(
         `invariant broken: number of mines: expected ${this.mineNumber} calculated: ${mineNumberCalculated}`

@@ -1,11 +1,11 @@
 function formatter({ seen, mine, neighborMines }) {
   if (!seen) {
-    return " ";
+    return "";
   }
   if (mine) {
     return "*";
   }
-  return neighborMines === 0 ? " " : neighborMines;
+  return neighborMines === 0 ? "" : neighborMines;
 }
 
 function render({ state: { array: rawArray, status, height, width } }) {
@@ -24,6 +24,7 @@ function render({ state: { array: rawArray, status, height, width } }) {
           ${rawArray.flatMap((row,x) => row.map((cell,y) => `<div class="cell number-${cell.neighborMines} ${cell.seen? "" : "unseen"}" onClick="commands.guess({x:${x},y:${y}})">${formatter(cell)}</div>`)).join("")}
           </div>
           ${status === "loose" ? "<p>you loose!!!!</p>" : ""}
+          ${status === "win" ? "<p>you win buddy!!!!</p>" : ""}
           <button onClick="commands.reRun();">Restart</button>`;
 }
 
