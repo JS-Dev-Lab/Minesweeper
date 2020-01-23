@@ -15,7 +15,10 @@ function run(createView, MineArray) {
   const view = createView({
     state: {
       array: mineArray.array,
-      status: mineArray.status
+      status: mineArray.status,
+      width,
+      height, 
+      mineNumber
     },
     commands: {
       reRun() {
