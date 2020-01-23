@@ -1,15 +1,19 @@
-function render({ state }) {
-  const newState = Object.assign(
-    { ...state },
-    {
-      array: state.array.map(row =>
-        row.reduce((a, b) => a + (b ? "1" : "0"), "")
-      ),
-      mineCount: state.mineCount.map(row => row.reduce((a, b) => a + b, ""))
-    }
-  );
-  return `<pre>${JSON.stringify(newState.array, null, 2)}</pre>
-          <pre>${JSON.stringify(newState.mineCount, null, 2)}</pre>
+function formater({ seen, mine, neighbourMines }) {
+  if (!seen) {
+    return "-";
+  }
+  if (mine) {
+    return "*";
+  }
+  return neighbourMines === 0 ? " " : neighbourMines;
+}
+
+function render({ state: { array: rawArray, status } }) {
+  const array = rawArray
+    .map(row => row.reduce((a, b) => a + formater(b), ""))
+    .reduce((acc, row) => acc + "\n" + row);
+  return `<pre>${array}</pre>
+          ${status === "loose" ? "<p>you loose!!!!</p>" : ""}   
           <button onClick="commands.reRun();">Restart</button>`;
 }
 

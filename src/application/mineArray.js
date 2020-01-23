@@ -2,51 +2,57 @@ import { TwoDimensionalArray } from "../infra/TwoDimensionalArray";
 
 class MineArray {
   constructor({ width, height, mineNumber }) {
-    this._array = new TwoDimensionalArray({ width, height, value: false });
-    this._mineCount = new TwoDimensionalArray({ width, height, value: 0 });
+    this._array = new TwoDimensionalArray({
+      width,
+      height,
+      value: () => ({ mine: false, neighbourMines: 0, seen: false })
+    });
     this.width = width;
     this.height = height;
-    this.mineNumber = mineNumber;
+    this.status = "running";
+    this.mineNumber = Math.min(mineNumber, width * height - 1);
     this.addMines();
-    this.solve();
     this.invariant();
   }
 
+  guess(position) {
+    const cell = this.getCell(position);
+    cell.seen = true;
+    if (cell.mine) {
+      this.status = "loose";
+      return;
+    }
+  }
+
   addMines() {
-    let count =0;
+    let count = 0;
+    const max = this.mineNumber;
     do {
-      const rank = Math.round(Math.random() * this._array.numberElements);
+      const rank = Math.round(Math.random() * (this._array.numberElements - 1));
       const position = this._array.getPosition(rank);
-      if (this._array.getValue(position) === false) {
-        this._array.setValue(position, true);
-        count++;
+      const cell = this.getCell(position);
+      if (cell.mine) {
+        continue;
       }
-    } while (count < this.mineNumber);
+      cell.mine = true;
+      this._array
+        .getNeighbours(position)
+        .forEach(value => value.neighbourMines++);
+      count++;
+    } while (count < max);
+  }
+
+  getCell(position) {
+    return this._array.getValue(position);
   }
 
   get array() {
     return this._array.photo;
   }
 
-  get mineCount() {
-    return this._mineCount.photo;
-  }
-
-  solve() {
-    this._array.forEach((_, { x, y }) => {
-      const value = this._array
-        .getNeighbors({ x, y })
-        .reduce(
-          (a, b) => a + (b ? 1 : 0),
-          this._array.getValue({ x, y }) ? -1 : 0
-        );
-      this._mineCount.setValue({ x, y }, value);
-    });
-  }
-
   invariant() {
     const mineNumberCalculated = this._array.reduce(
-      (a, b) => a + (b === true ? 1 : 0),
+      (a, b) => a + (b.mine === true ? 1 : 0),
       0
     );
     if (mineNumberCalculated !== this.mineNumber) {

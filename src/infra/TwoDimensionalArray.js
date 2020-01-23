@@ -2,8 +2,9 @@ import { range } from "./range";
 
 class TwoDimensionalArray {
   constructor({ width, height, value }) {
+    const getValue = typeof value === "function" ? value : () => value;
     this.array = Array.from({ length: width }, () =>
-      new Array(height).fill(value)
+      Array.from({ length: height }, getValue)
     );
     this.width = width;
     this.height = height;
@@ -14,7 +15,11 @@ class TwoDimensionalArray {
   }
 
   get photo() {
-    return this.array.map(value => [...value]);
+    return this.map(value => value);
+  }
+
+  map(mapper) {
+    return this.array.map(value => value.map(mapper));
   }
 
   getValue({ x, y }) {
@@ -25,15 +30,11 @@ class TwoDimensionalArray {
     this.array[x][y] = value;
   }
 
-  getNeighbors({ x: x0, y: y0 }) {
-    return this.rangeX(x0 - 1, x0 + 1).flatMap(x =>
-      this.rangeY(y0 - 1, y0 + 1).map(y =>
-        this.getValue({
-          x,
-          y
-        })
-      )
-    );
+  getNeighbours({ x: x0, y: y0 }) {
+    return this.rangeX(x0 - 1, x0 + 1)
+      .flatMap(x => this.rangeY(y0 - 1, y0 + 1).map(y => ({ x, y })))
+      .filter(({ x, y }) => x !== x0 || y !== y0)
+      .map(this.getValue.bind(this));
   }
 
   rangeX(x0, x1) {
@@ -54,7 +55,7 @@ class TwoDimensionalArray {
 
   getPosition(rank) {
     const x = rank % this.width;
-    const y = Math.round(rank / this.width);
+    const y = Math.ceil((rank - x) / this.width);
     return { x, y };
   }
 
@@ -72,6 +73,7 @@ class TwoDimensionalArray {
         callBack(this.array[x][y], { x, y });
       }
     }
+    return this;
   }
 }
 
