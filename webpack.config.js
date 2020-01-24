@@ -45,8 +45,8 @@ module.exports = (_, argv) => ({
     new VueLoaderPlugin()
   ],
   output: {
-    chunkFilename: '[name].bundle.js',
+    chunkFilename: "[name].bundle.js",
     filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "docs")
   }
 });
