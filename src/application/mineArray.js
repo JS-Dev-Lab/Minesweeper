@@ -20,6 +20,9 @@ class MineArray {
   }
 
   guess(position) {
+    if (this.status !== "running") {
+      return;
+    }
     const cell = this.getCell(position);
     if (cell.seen) {
       return;

@@ -4,11 +4,13 @@ function run(createView, MineArray) {
   const mineNumber = 50;
 
   let mineArray = new MineArray({ width, height, mineNumber });
+  let from = new Date();
 
-  function updateView() {
+  function updateView(updater) {
     view.update(s => {
       s.array = mineArray.array;
       s.status = mineArray.status;
+      updater && updater(s);
     });
   }
 
@@ -17,13 +19,15 @@ function run(createView, MineArray) {
       array: mineArray.array,
       status: mineArray.status,
       width,
-      height, 
-      mineNumber
+      height,
+      mineNumber,
+      timeSpend: 0
     },
     commands: {
       reRun() {
         mineArray = new MineArray({ width, height, mineNumber });
-        updateView();
+        from = new Date();
+        updateView(s => s.timeSpend = 0);
       },
       guess({ x, y }) {
         mineArray.guess({ x, y });
@@ -31,6 +35,15 @@ function run(createView, MineArray) {
       }
     }
   });
+
+  window.setInterval(() => {
+    if (mineArray.status !== "running") {
+      return;
+    }
+    const now = new Date();
+    const timeSpendInSecond = Math.round(Math.abs(from - now) / 1000);
+    view.update(s => s.timeSpend = timeSpendInSecond);
+  }, 1000);
 }
 
 export { run };
