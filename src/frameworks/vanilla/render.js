@@ -8,7 +8,9 @@ function formatter({ seen, mine, neighborMines }) {
   return neighborMines === 0 ? "" : neighborMines;
 }
 
-function render({ state: { array: rawArray, status, height, width, timeSpend } }) {
+function render({
+  state: { array: rawArray, status, height, width, timeSpend }
+}) {
   return `<style>
             .wrapper {
               display: grid;
@@ -18,7 +20,20 @@ function render({ state: { array: rawArray, status, height, width, timeSpend } }
             }
           </style>
           <div class="wrapper">
-          ${rawArray.flatMap((row,x) => row.map((cell,y) => `<div class="cell number-${cell.neighborMines} ${cell.seen? "seen" : "unseen"} ${cell.mine? "mine" : ""}" onClick="commands.guess({x:${x},y:${y}})">${formatter(cell)}</div>`)).join("")}
+          ${rawArray
+            .flatMap((row, x) =>
+              row.map(
+                (cell, y) =>
+                  `<div class="cell position-${x}-${y} number-${
+                    cell.neighborMines
+                  } ${cell.seen ? "seen" : "unseen"} ${
+                    cell.mine ? "mine" : ""
+                  }" onClick="commands.guess({x:${x},y:${y}})">${formatter(
+                    cell
+                  )}</div>`
+              )
+            )
+            .join("")}
           </div>
           ${status === "loose" ? "<p>you loose!!!!</p>" : ""}
           ${status === "win" ? "<p>you win buddy!!!!</p>" : ""}
