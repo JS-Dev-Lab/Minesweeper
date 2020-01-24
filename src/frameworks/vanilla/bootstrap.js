@@ -2,9 +2,10 @@ import { viewCreatorFactory } from "mvi.vanilla";
 import { render } from "./render";
 
 const element = document.getElementById("app");
-const style = document.createElement('style');
-style.type = 'text/css';
-style.appendChild(document.createTextNode(`
+const style = document.createElement("style");
+style.type = "text/css";
+style.appendChild(
+  document.createTextNode(`
 .cell {
   display: flex;
   justify-content: center;
@@ -39,8 +40,9 @@ style.appendChild(document.createTextNode(`
 }
 .cell.number-7 {
   color: purple;
-}`));
-const head = document.getElementsByTagName('head')[0];
+}`)
+);
+const head = document.getElementsByTagName("head")[0];
 head.appendChild(style);
 
 const createView = viewCreatorFactory(element, render);
