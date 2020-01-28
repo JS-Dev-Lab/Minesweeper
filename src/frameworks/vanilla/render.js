@@ -9,7 +9,7 @@ function formatter({ seen, mine, neighborMines }) {
 }
 
 function render({
-  state: { array: rawArray, status, height, width, timeSpend }
+  state: { array, status, height, width, timeSpend }
 }) {
   return `<style>
             .wrapper {
@@ -20,7 +20,7 @@ function render({
             }
           </style>
           <div class="wrapper">
-          ${rawArray
+          ${array
             .flatMap((row, x) =>
               row.map(
                 (cell, y) =>
