@@ -6,7 +6,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "webpack --mode=production --default=vanilla",
-    "serve": "webpack-dev-server --open --mode=development --default=vanilla"
+    "serve": "webpack-dev-server --open --mode=development --default=lit-html"
   },
   "repository": {
     "type": "git",
