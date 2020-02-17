@@ -9,15 +9,11 @@ function run(
   function startTime() {
     const from = new Date();
     view.update(s => (s.timeSpend = 0));
-    timeUpdater = window.setInterval(() => {
+    return window.setInterval(() => {
       const now = new Date();
       const timeSpendInSecond = Math.round(Math.abs(from - now) / 1000);
       view.update(s => (s.timeSpend = timeSpendInSecond));
     }, 1000);
-  }
-
-  function stopTime() {
-    window.clearInterval(timeUpdater);
   }
 
   function updateView() {
@@ -39,20 +35,20 @@ function run(
     commands: {
       reRun() {
         mineArray = new MineArray({ width, height, mineNumber });
-        startTime();
+        timeUpdater = startTime();
         updateView();
       },
       guess({ x, y }) {
         mineArray.guess({ x, y });
         if (mineArray.status !== "running") {
-          stopTime();
+          window.clearInterval(timeUpdater);
         }
         updateView();
       }
     }
   });
 
-  startTime();
+  timeUpdater = startTime();
 }
 
 export { run };
